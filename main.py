@@ -33,7 +33,7 @@ if __name__ == '__main__':
     followers_count_flag = True
     IA_robo = Robot(account_path)
     influencer_container = InfluencerContainer(IA_robo)
-    IA_robo.set_influencer_list(influencer_list_path)
+    IA_robo.update_influencer_list(influencer_list_path)
     influencer_container.check_infl_array_list(IA_robo.get_influencer_array())
     start_story_table_time = datetime.now(timezone.utc)
     influencer_container.update_story_table()
@@ -44,11 +44,10 @@ if __name__ == '__main__':
         current_dif_time_result = datetime.now(timezone.utc) - start_cycle_time_result
         if current_dif_time_result > delta_time_3h:
             influencer_container.create_xlsx_report()
-            IA_robo.set_influencer_list(influencer_list_path)
+            IA_robo.update_influencer_list(influencer_list_path)
             influencer_container.check_infl_array_list(IA_robo.get_influencer_array())
-            IA_robo.set_accounts_list(account_path)
+            IA_robo.update_bots_account_list(account_path)
             start_cycle_time_result = datetime.now(timezone.utc)
-            # write_Log_message("Excel Report has been updated\n")
             EventRepository.register_event(EventType.Log, EventCategory.Output_Generation, EventName.Update_Excel_Files,
                                            "Main")
             influencer_container.update_statistical_properties()
@@ -57,7 +56,6 @@ if __name__ == '__main__':
         if current_dif_time_story_table > delta_time_24h:
             influencer_container.update_story_table()
             start_story_table_time = datetime.now(timezone.utc)
-            # write_Log_message("stories table has been updated\n")
             EventRepository.register_event(EventType.Log, EventCategory.Cycle_Management, EventName.Update_Story_Table,
                                            "Main")
 
@@ -71,8 +69,6 @@ if __name__ == '__main__':
                                                robot_api=RobotAPI.Instagrapi, bot_id=IA_robo.get_grapi_acc_id(),
                                                content="Grapi account changed after engine cycle time")
             else:
-                # write_error_message("Changing grapi account failed after engine cycle time\nLast account: " +
-                #                     IA_robo.username)
                 EventRepository.register_event(EventType.Error, EventCategory.Authentication,
                                                EventName.All_Changing_Account_Failed, "Main",
                                                robot_api=RobotAPI.Instagrapi, bot_id=IA_robo.get_grapi_acc_id())
@@ -104,8 +100,6 @@ if __name__ == '__main__':
                             followers_count_flag = False
                             break
                         influencer_container.set_follower_after_1h(adv_id, followers_count)
-                        # write_Log_message("Calculate follower count after 1h\n" + mentioned_username + ":    " +
-                        #                   str(followers_count))
                         EventRepository.register_event(EventType.Log, EventCategory.Reading_Media,
                                                        EventName.Reading_Follower_Count, "Main",
                                                        robot_api=RobotAPI.Instaloader, target_account=mentioned_username,
@@ -121,8 +115,6 @@ if __name__ == '__main__':
                             followers_count_flag = False
                             break
                         influencer_container.set_follower_after_2h(adv_id, followers_count)
-                        # write_Log_message("Calculate follower count after 2h\n" + mentioned_username + ":    " +
-                        #                   str(followers_count))
                         EventRepository.register_event(EventType.Log, EventCategory.Reading_Media,
                                                        EventName.Reading_Follower_Count, "Main",
                                                        robot_api=RobotAPI.Instaloader,
@@ -140,8 +132,6 @@ if __name__ == '__main__':
                             followers_count_flag = False
                             break
                         influencer_container.set_follower_after_12h(adv_id, followers_count)
-                        # write_Log_message("Calculate follower count after 12h\n" + mentioned_username + ":    " +
-                        #                   str(followers_count))
                         EventRepository.register_event(EventType.Log, EventCategory.Reading_Media,
                                                        EventName.Reading_Follower_Count, "Main",
                                                        robot_api=RobotAPI.Instaloader,
@@ -159,8 +149,6 @@ if __name__ == '__main__':
                             followers_count_flag = False
                             break
                         influencer_container.set_follower_after_24h(adv_id, followers_count)
-                        # write_Log_message("Calculate follower count after 24h\n" + mentioned_username + ":    " +
-                        #                   str(followers_count))
                         EventRepository.register_event(EventType.Log, EventCategory.Reading_Media,
                                                        EventName.Reading_Follower_Count, "Main",
                                                        robot_api=RobotAPI.Instaloader,

@@ -171,7 +171,7 @@ class AdvertiseRepository:
             advert = session.query(Advertise).filter(
                 Advertise.id == adv_id
             ).first()
-            return advert.status if advert else None
+            return advert.api_status if advert else None
 
     def set_follower_after_1h(self, adv_id, followers_count):
         with session_scope() as session:
@@ -242,7 +242,7 @@ class AdvertiseRepository:
             advert = session.query(Advertise).filter(
                 Advertise.id == adv_id
             ).first()
-            advert.status = state
+            advert.api_status = state
             setattr(advert, "status", state)
             session.commit()
 

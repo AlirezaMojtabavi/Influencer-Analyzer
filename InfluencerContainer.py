@@ -61,9 +61,7 @@ class InfluencerContainer:
     def read_stories(self, infl_id, reading_stories_flag):
         infl_username = self.infl_repo.get_username(infl_id)
         infl_user_id = self.infl_repo.get_user_id(infl_id)
-        sleep_time = random.randint(21, 39)
-        # write_Log_message("read " + infl_username + " stories after " + str(sleep_time) + " seconds\n")
-        sleep(sleep_time)
+        sleep(random.randint(21, 39))
         try:
             stories = self.IA_engine.grapi_engine.user_stories(infl_user_id)
             EventRepository.register_event(EventType.Log, EventCategory.Reading_Media, EventName.Reading_Story,
@@ -71,10 +69,6 @@ class InfluencerContainer:
                                            target_account=infl_username, bot_id=self.IA_engine.get_grapi_acc_id())
         except PleaseWaitFewMinutes as e:
             sleep_duration = random.randint(301, 367)
-            # warning_title = "PleaseWaitFewMinutes Exception\nFailed to reading " + infl_username + \
-            #                 " stories\nTry to relogin after " + str(sleep_duration) + " seconds"
-            # warning_message = str(e)
-            # write_warning_message(warning_title, warning_message)
             EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                            EventName.Reading_Story_Failed,
                                            "InfluencerContainer::read_stories-PleaseWaitFewMinutes",
@@ -85,7 +79,6 @@ class InfluencerContainer:
                 self.IA_engine.grapi_engine.logger.exception(e)
                 sleep(random.randint(30, 60))
                 self.IA_engine.grapi_engine.relogin()
-                # write_Log_message("IA robo has relogged in, and re-try to get " + infl_username + " stories\n")
                 EventRepository.register_event(EventType.Log, EventCategory.Authentication, EventName.Login_Succeeded,
                                                "InfluencerContainer::read_stories-Others",
                                                robot_api=RobotAPI.Instagrapi, target_account=infl_username,
@@ -98,7 +91,6 @@ class InfluencerContainer:
                                                    target_account=infl_username,
                                                    bot_id=self.IA_engine.get_grapi_acc_id())
                 except Exception as e:
-                    # write_warning_message("IA engine couldn't read " + infl_username + " stories\n", str(e))
                     EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                                    EventName.Reading_Story_Failed,
                                                    "InfluencerContainer::read_stories-Others",
@@ -107,9 +99,6 @@ class InfluencerContainer:
                     return None, False
 
             except Exception as e:
-                # login_flag = True
-                # warning_title = "Relogin failed\n" + self.IA_engine.engine.username + "\nTry another accounts"
-                # write_error_message(warning_title, str(e))
                 EventRepository.register_event(EventType.Warning, EventCategory.Authentication, EventName.Login_Failed,
                                                "InfluencerContainer::read_stories-PleaseWaitFewMinutes",
                                                robot_api=RobotAPI.Instagrapi, target_account=infl_username,
@@ -124,7 +113,6 @@ class InfluencerContainer:
                                                        robot_api=RobotAPI.Instagrapi, target_account=infl_username,
                                                        bot_id=self.IA_engine.get_grapi_acc_id())
                     except Exception as e:
-                        # write_warning_message("IA engine couldn't read " + infl_username + " stories\n", str(e))
                         EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                                        EventName.Reading_Story_Failed,
                                                        "InfluencerContainer::read_stories-PleaseWaitFewMinutes",
@@ -132,8 +120,6 @@ class InfluencerContainer:
                                                        bot_id=self.IA_engine.get_grapi_acc_id(), content=str(e))
                         return None, False
                 else:
-                    # write_error_message("Change grapi account faild",
-                    #                     " Last account: " + self.IA_engine.grapi_engine.username)
                     EventRepository.register_event(EventType.Error, EventCategory.Authentication,
                                                    EventName.All_Changing_Account_Failed,
                                                    "InfluencerContainer::read_stories-PleaseWaitFewMinutes",
@@ -142,8 +128,6 @@ class InfluencerContainer:
                     return False, False
 
         except LoginRequired as e:
-            # warning_title = f"Login required when accessing {infl_username}'s stories"
-            # write_warning_message(warning_title, "Attempting to re-login... " + self.IA_engine.grapi_engine.username)
             EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                            EventName.Reading_Story_Failed,
                                            "InfluencerContainer::read_stories-LoginRequired",
@@ -159,7 +143,6 @@ class InfluencerContainer:
                                                robot_api=RobotAPI.Instagrapi, target_account=infl_username,
                                                bot_id=self.IA_engine.get_grapi_acc_id(),
                                                content="relogged in successfully")
-                # write_Log_message("IA robo has relogged in, and re-try to read " + infl_username + " stories\n")
                 try:
                     stories = self.IA_engine.grapi_engine.user_stories(infl_user_id)
                     EventRepository.register_event(EventType.Log, EventCategory.Reading_Media,
@@ -168,7 +151,6 @@ class InfluencerContainer:
                                                    robot_api=RobotAPI.Instagrapi, target_account=infl_username,
                                                    bot_id=self.IA_engine.get_grapi_acc_id())
                 except Exception as e:
-                    # write_warning_message("IA engine couldn't read " + infl_username + " stories\n", str(e))
                     EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                                    EventName.Reading_Story_Failed,
                                                    "InfluencerContainer::read_stories-LoginRequired",
@@ -176,8 +158,6 @@ class InfluencerContainer:
                                                    bot_id=self.IA_engine.get_grapi_acc_id(), content=str(e))
                     return None, False
             except Exception as e1:
-                # error_title = "Relogin failed\n" + self.IA_engine.grapi_engine.username + "\nTry another accounts"
-                # write_error_message(error_title, str(e1))
                 EventRepository.register_event(EventType.Warning, EventCategory.Authentication,
                                                EventName.Login_Failed,
                                                "InfluencerContainer::read_stories-LoginRequired",
@@ -202,8 +182,6 @@ class InfluencerContainer:
                                                        bot_id=self.IA_engine.get_grapi_acc_id(), content=str(e))
                         return None, False
                 else:
-                    # write_error_message("Change grapi account failed", "Last account: " +
-                    # self.IA_engine.grapi_engine.username)
                     EventRepository.register_event(EventType.Error, EventCategory.Authentication,
                                                    EventName.All_Changing_Account_Failed,
                                                    "InfluencerContainer::read_stories-LoginRequired",
@@ -211,9 +189,6 @@ class InfluencerContainer:
                                                    bot_id=self.IA_engine.get_grapi_acc_id())
                     return False, False
         except Exception as e:
-            # warning_title = "Failed to reading " + infl_username + " stories\nAttempting to re-login...\n" + \
-            #                 self.IA_engine.username
-            # write_warning_message(warning_title, str(e))
             EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                            EventName.Reading_Story_Failed,
                                            "InfluencerContainer::read_stories-Others",
@@ -229,7 +204,6 @@ class InfluencerContainer:
                                                robot_api=RobotAPI.Instagrapi, target_account=infl_username,
                                                bot_id=self.IA_engine.get_grapi_acc_id(),
                                                content="relogged in successfully")
-                # write_Log_message("IA robo has relogged in, and reads " + infl_username + " stories\n")
                 try:
                     stories = self.IA_engine.grapi_engine.user_stories(infl_user_id)
                     EventRepository.register_event(EventType.Log, EventCategory.Reading_Media,
@@ -238,7 +212,6 @@ class InfluencerContainer:
                                                    robot_api=RobotAPI.Instagrapi, target_account=infl_username,
                                                    bot_id=self.IA_engine.get_grapi_acc_id())
                 except Exception as e:
-                    # write_warning_message("IA engine couldn't read " + infl_username + " stories\n", str(e))
                     EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                                    EventName.Reading_Story_Failed,
                                                    "InfluencerContainer::read_stories-Others",
@@ -246,9 +219,6 @@ class InfluencerContainer:
                                                    bot_id=self.IA_engine.get_grapi_acc_id(), content=str(e))
                     return None, False
             except Exception as e1:
-                # login_flag = True
-                # warning_title = "Relogin failed\n" + self.IA_engine.grapi_engine.username + "\nTry another accounts"
-                # write_error_message(warning_title, str(e1))
                 EventRepository.register_event(EventType.Warning, EventCategory.Authentication,
                                                EventName.Login_Failed,
                                                "InfluencerContainer::read_stories-Others",
@@ -264,7 +234,6 @@ class InfluencerContainer:
                                                        robot_api=RobotAPI.Instagrapi, target_account=infl_username,
                                                        bot_id=self.IA_engine.get_grapi_acc_id())
                     except Exception as e:
-                        # write_warning_message("IA engine couldn't read " + infl_username + " stories\n", str(e))
                         EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                                        EventName.Reading_Story_Failed,
                                                        "InfluencerContainer::read_stories-Others",
@@ -272,7 +241,6 @@ class InfluencerContainer:
                                                        bot_id=self.IA_engine.get_grapi_acc_id(), content=str(e))
                         return None, False
                 else:
-                    # write_error_message("Change grapi account faild", "Last account: " + self.IA_engine.grapi_engine.username)
                     EventRepository.register_event(EventType.Error, EventCategory.Authentication,
                                                    EventName.All_Changing_Account_Failed,
                                                    "InfluencerContainer::read_stories-Others",
@@ -338,10 +306,6 @@ class InfluencerContainer:
             followers_count = mentioned_profile.followers
             mentioned_media_count = mentioned_profile.mediacount
         except Exception as e:
-            # warning_title = f"Failed to create advertise {mentioned_username} "
-            # warning_message = str(e) + "\nFrom " + influencer_username + " stories"
-            # write_warning_message(warning_title, warning_message)
-            # login_flag = True
             EventRepository.register_event(EventType.Error, EventCategory.Reading_Media,
                                            EventName.Reading_Profile_Failed, "InfluencerContainer::create_advertise",
                                            robot_api=RobotAPI.Instaloader, target_account=mentioned_username,
@@ -354,8 +318,6 @@ class InfluencerContainer:
                     followers_count = mentioned_profile.followers
                     mentioned_media_count = mentioned_profile.mediacount
                 except Exception as e:
-                    # write_warning_message(
-                    #     "IA engine Instaloader couldn't create " + mentioned_username + " Advertise\n", str(e))
                     EventRepository.register_event(EventType.Error, EventCategory.Reading_Media,
                                                    EventName.Reading_Profile_Failed,
                                                    "InfluencerContainer::create_advertise",
@@ -367,9 +329,6 @@ class InfluencerContainer:
                         followers_count = mentioned_profile.follower_count
                         mentioned_media_count = mentioned_profile.media_count
                     except Exception as e:
-                        # write_error_message(
-                        #     "IA engine(Instaloader and Grapi) couldn't create " + mentioned_username +
-                        #     " Advertise\n", str(e))
                         EventRepository.register_event(EventType.Error, EventCategory.Reading_Media,
                                                        EventName.Reading_Profile_Failed,
                                                        "InfluencerContainer::create_advertise",
@@ -377,8 +336,6 @@ class InfluencerContainer:
                                                        bot_id=self.IA_engine.get_grapi_acc_id(), content=str(e))
                         return False
             else:
-                # write_error_message("Change Instaloader account failed",
-                #                     "Last account: " + self.IA_engine.second_username)
                 EventRepository.register_event(EventType.Error, EventCategory.Authentication,
                                                EventName.All_Changing_Account_Failed,
                                                "InfluencerContainer::create_advertise",
@@ -414,9 +371,6 @@ class InfluencerContainer:
         try:
             posts = self.IA_engine.grapi_engine.user_medias(user_id, 50)
         except Exception as e:
-            # warning_title = "Failed to read posts "
-            # warning_message = str(e)
-            # write_warning_message(warning_title, warning_message)
             EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                            EventName.Reading_Post_Failed, "InfluencerContainer::calculate_statistical",
                                            robot_api=RobotAPI.Instagrapi, target_account=username,
@@ -434,9 +388,6 @@ class InfluencerContainer:
                                                content="relogged in successfully")
                 sleep(random.randint(2, 9))
             except Exception as e:
-                # warning_title = "Failed to read posts "
-                # warning_message = str(e)
-                # write_warning_message(warning_title, warning_message)
                 EventRepository.register_event(EventType.Warning, EventCategory.Authentication,
                                                EventName.Login_Failed,
                                                "InfluencerContainer::calculate_statistical",
@@ -445,8 +396,6 @@ class InfluencerContainer:
             try:
                 posts = self.IA_engine.grapi_engine.user_medias(user_id, 50)
             except Exception as e:
-                # write_warning_message("IA engine couldn't read " + str(user_id) + " posts\n", str(e))
-                # login_flag = True
                 EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                                EventName.Reading_Post_Failed,
                                                "InfluencerContainer::calculate_statistical",
@@ -457,8 +406,6 @@ class InfluencerContainer:
                     try:
                         posts = self.IA_engine.grapi_engine.user_medias(user_id, 50)
                     except Exception as e:
-                        # write_error_message(
-                        #     "IA engine(Grapi) couldn't read " + str(user_id) + " posts\n", str(e))
                         EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                                        EventName.Reading_Post_Failed,
                                                        "InfluencerContainer::calculate_statistical",
@@ -466,8 +413,6 @@ class InfluencerContainer:
                                                        bot_id=self.IA_engine.get_grapi_acc_id(), content=str(e))
                         return False, False, False
                 else:
-                    # write_error_message("Change grapi account faild",
-                    #                     " Last account: " + self.IA_engine.grapi_engine.username)
                     EventRepository.register_event(EventType.Warning, EventCategory.Reading_Media,
                                                    EventName.Reading_Post_Failed,
                                                    "InfluencerContainer::calculate_statistical",
@@ -510,9 +455,6 @@ class InfluencerContainer:
             followers_count = inf_profile.followers
             media_count = inf_profile.mediacount
         except Exception as e:
-            # warning_title = "Failed to Create influencer " + influencer_username
-            # warning_message = str(e) + "\t" + self.IA_engine.second_username
-            # write_warning_message(warning_title, warning_message)
             EventRepository.register_event(EventType.Error, EventCategory.Reading_Media,
                                            EventName.Reading_Profile_Failed, "InfluencerContainer::create_influencer",
                                            robot_api=RobotAPI.Instaloader, target_account=influencer_username,
@@ -532,17 +474,12 @@ class InfluencerContainer:
                                                    bot_id=self.IA_engine.get_loader_acc_id(),
                                                    target_account= influencer_username,
                                                    content=str(e))
-                    # write_warning_message(
-                    #     "IA engine Instaloader couldn't create " + influencer_username + " Influencer\n", str(e))
                     try:
                         influencer_id = self.IA_engine.grapi_engine.user_id_from_username(influencer_username)
                         inf_profile = self.IA_engine.grapi_engine.user_info(influencer_id)
                         followers_count = inf_profile.follower_count
                         media_count = inf_profile.media_count
                     except Exception as e:
-                        # write_error_message(
-                        #     "IA engine(Instaloader and Grapi) couldn't create " + influencer_username +
-                        #     " Influencer\n", str(e))
                         EventRepository.register_event(EventType.Error, EventCategory.Reading_Media,
                                                        EventName.Reading_Profile_Failed,
                                                        "InfluencerContainer::create_influencer",
@@ -552,8 +489,6 @@ class InfluencerContainer:
                                                        content=str(e))
                         return False
             else:
-                # write_error_message("Change Instaloader account failed",
-                #                     "Last account: " + self.IA_engine.second_username)
                 EventRepository.register_event(EventType.Error, EventCategory.Authentication,
                                                EventName.All_Changing_Account_Failed,
                                                "InfluencerContainer::read_stories-Others",

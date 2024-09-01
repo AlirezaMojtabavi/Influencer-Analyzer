@@ -39,7 +39,7 @@ followers_count_v1 = mentioned_profile.follower_count
 IA_robo = Robot(account_path)
 influencer_container = InfluencerContainer(IA_robo)
 
-IA_robo.set_influencer_list(influencer_list_path)
+IA_robo.update_influencer_list(influencer_list_path)
 # filling influencer_list according to influencer_array
 influencer_container.check_infl_array_list(IA_robo.get_influencer_array())
 
