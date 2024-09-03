@@ -334,6 +334,30 @@ class Robot:
                                                robot_api=RobotAPI.Instaloader, bot_id=self.get_loader_acc_id())
                 return False
 
+    def relogin_grapi(self, occurrence_source, target_username=None):
+        try:
+            sleep(random.randint(2, 5))
+            self.grapi_engine.relogin()
+            sleep(random.randint(3, 5))
+            EventRepository.register_event(EventType.Log, EventCategory.Authentication,
+                                           EventName.Login_Succeeded, occurrence_source,
+                                           robot_api=RobotAPI.Instagrapi, target_account=target_username,
+                                           bot_id=self.get_grapi_acc_id(),
+                                           content="relogged in successfully")
+            BotRepository.update_bot_content(self.grapi_username, BotAccountStatus.InstaGrapi,
+                                             last_login_status=LastLoginStatus.Successful,
+                                             message="relogged in successfully")
+            return True
+        except Exception as e:
+            EventRepository.register_event(EventType.Warning, EventCategory.Authentication,
+                                           EventName.Login_Failed, occurrence_source,
+                                           robot_api=RobotAPI.Instagrapi, target_account=target_username,
+                                           bot_id=self.get_grapi_acc_id(), content=str(e))
+            BotRepository.update_bot_content(self.grapi_username, BotAccountStatus.InstaGrapi,
+                                             last_login_status=LastLoginStatus.Failed,
+                                             message="relogged in failed.  " + str(e))
+            return False
+
     def get_start_cycle_time_engine(self):
         return self.start_cycle_time_engine
 
