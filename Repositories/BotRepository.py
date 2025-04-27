@@ -34,7 +34,7 @@ class BotRepository:
             bot = session.query(Bot).filter(
                 Bot.username == username).first()
             if bot is not None:
-                bot.api_status = api_status
+                bot.account_status = api_status
                 setattr(bot, "api_status", api_status)
                 if not(api_status == BotAccountStatus.Standby):
                     bot.last_login_time = datetime.now(timezone.utc)
@@ -46,4 +46,14 @@ class BotRepository:
                     bot.last_error_message = message
                     setattr(bot, "last_error_message", message)
                 session.commit()
+
+    @classmethod
+    def update_inactive_bots(cls, bots_account_array):
+        account_usernames = [item[1] for item in bots_account_array]
+        with session_scope() as session:
+            missing_bots = session.query(Bot).where(~Bot.username.in_(account_usernames)).all()
+            for bot in missing_bots:
+                bot.account_status = BotAccountStatus.Off
+                setattr(bot, "account_status", BotAccountStatus.Off)
+            session.commit()
 

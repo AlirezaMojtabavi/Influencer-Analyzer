@@ -1,7 +1,6 @@
-from Models.Event import Event
+from Models.Event import Event, EventType, EventCategory, EventName, RobotAPI
 from Database import session_scope
 from sqlalchemy.orm import joinedload
-from Repositories.BotRepository import BotRepository
 
 
 class EventRepository:
@@ -14,4 +13,3 @@ class EventRepository:
             session.flush()
             session.add(new_event)
             session.commit()
-

@@ -4,9 +4,8 @@ from time import sleep
 from instaloader import instaloader
 import random
 from datetime import datetime, timezone
-from Repositories.EventRepository import EventRepository
+from Repositories.EventRepository import EventRepository, EventCategory, EventType, EventName, RobotAPI
 from Repositories.BotRepository import BotRepository, BotAccountStatus, LastLoginStatus
-from Models.Event import EventName, EventCategory, RobotAPI, EventType
 from instagrapi.types import (
     Account, Collection, Comment, DirectMessage, DirectThread, Hashtag, Highlight, Location, Media, MediaOembed,
     Share, Story, StoryLink, StoryMedia, StoryMention, StorySticker, User, UserShort, Usertag,
@@ -193,7 +192,7 @@ class Robot:
             BotRepository.update_bot_content(self.grapi_username, BotAccountStatus.InstaGrapi,
                                              LastLoginStatus.Successful, message=' ')
             self.start_cycle_time_engine = datetime.now(timezone.utc)
-            sleep(random.randint(3, 5))
+            sleep(random.randint(2, 5))
             return True
         except Exception as e:
             EventRepository.register_event(EventType.Warning, EventCategory.Authentication,
@@ -338,7 +337,7 @@ class Robot:
         try:
             sleep(random.randint(2, 5))
             self.grapi_engine.relogin()
-            sleep(random.randint(3, 5))
+            sleep(random.randint(2, 5))
             EventRepository.register_event(EventType.Log, EventCategory.Authentication,
                                            EventName.Login_Succeeded, occurrence_source,
                                            robot_api=RobotAPI.Instagrapi, target_account=target_username,

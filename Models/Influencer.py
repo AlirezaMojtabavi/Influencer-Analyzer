@@ -5,7 +5,7 @@ from datetime import datetime
 import enum
 
 
-class Monitoring_Status(enum.Enum):
+class MonitoringStatus(enum.Enum):
     On = 'On'
     Off = 'Off'
 
@@ -17,11 +17,11 @@ class Influencer(Base):
     account = relationship("Account", back_populates="influencer")
     monitoring_start_date = Column(DateTime, default=datetime.now(), nullable=False)
     monitoring_finish_date = Column(DateTime, default=datetime.now(), nullable=False)
-    monitoring_status = Column(Enum(Monitoring_Status), default=Monitoring_Status.Off, nullable=False)
+    monitoring_status = Column(Enum(MonitoringStatus), default=MonitoringStatus.Off, nullable=False)
     price = Column(Integer, nullable=True)
 
-    def __init__(self, account, monitoring_start_date, monitoring_finish_date):
-        self.account = account
+    def __init__(self, account_id, monitoring_start_date, monitoring_finish_date):
+        self.account_id = account_id
         self.monitoring_start_date = monitoring_start_date
         self.monitoring_finish_date = monitoring_finish_date
 

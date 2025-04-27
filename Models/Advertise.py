@@ -5,12 +5,12 @@ from datetime import datetime
 import enum
 
 
-class Advertise_Status(enum.Enum):
+class AdvertiseStatus(enum.Enum):
     Open = 'Open'
     Close = 'Close'
 
 
-class Fraud_Analaysis(enum.Enum):
+class FraudAnalaysis(enum.Enum):
     Real = 'Real'
     Fake = 'Fake'
 
@@ -32,8 +32,8 @@ class Advertise(Base):
     follower_after_12h = Column(Integer, default=0)
     follower_after_24h = Column(Integer, default=0)
     performance = Column(Integer, default=0)
-    fraud_analaysis = Column(Enum(Fraud_Analaysis), default=Fraud_Analaysis.Real, nullable=False)
-    status = Column(Enum(Advertise_Status), default=Advertise_Status.Open, nullable=False)
+    fraud_analaysis = Column(Enum(FraudAnalaysis), default=FraudAnalaysis.Real, nullable=False)
+    status = Column(Enum(AdvertiseStatus), default=AdvertiseStatus.Open, nullable=False)
 
     def __init__(self, account_id, infl_id, start_date, follower_before):
         self.mentioned_account_id = account_id
